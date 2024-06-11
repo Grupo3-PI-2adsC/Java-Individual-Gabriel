@@ -1,11 +1,21 @@
 package org.example;
 
+import com.github.britooo.looca.api.group.discos.Disco;
+import com.github.britooo.looca.api.group.discos.Volume;
+import com.sun.jna.platform.win32.WinDef;
+import org.example.pc.componentes.DiscoCp;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import oshi.hardware.NetworkIF;
+import com.github.britooo.looca.api.core.Looca;
+
+import java.util.Dictionary;
+import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
-        LimparVolume limpando = new LimparVolume();
-        limpando.iniciarLimpezaVolume();
 //    Computador com = new Computador();
 //
 //    com.teste();

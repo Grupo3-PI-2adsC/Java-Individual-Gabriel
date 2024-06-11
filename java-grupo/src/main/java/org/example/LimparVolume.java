@@ -5,7 +5,6 @@ package org.example;
 
 import com.github.britooo.looca.api.core.Looca;
 import org.apache.commons.io.FileUtils;
-
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
