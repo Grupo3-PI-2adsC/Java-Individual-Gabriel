@@ -1,14 +1,11 @@
 package org.example;
+
 import com.github.britooo.looca.api.core.Looca;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.example.pc.componentes.Componente;
 import org.example.pc.Computador;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.example.pc.componentes.Componente;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-
-import java.sql.ResultSet;
-import java.util.List;
 
 public class Conexao {
     private JdbcTemplate conexaoDoBanco;
@@ -26,8 +23,8 @@ public class Conexao {
         BasicDataSource dataSource = new BasicDataSource();
 
         url = "jdbc:mysql://localhost:3306/netmed";
-        username = "root";
-        password = "#Gf44298704890";
+        username = "Netmed";
+        password = "Netmed#1@@";
         /*
              Exemplo de driverClassName:
                 com.mysql.cj.jdbc.Driver <- EXEMPLO PARA MYSQL
