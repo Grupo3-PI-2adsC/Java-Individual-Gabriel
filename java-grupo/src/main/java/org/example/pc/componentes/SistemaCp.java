@@ -2,6 +2,8 @@ package org.example.pc.componentes;
 
 import com.github.britooo.looca.api.core.Looca;
 import org.example.Conexao;
+import org.example.ConexaoMysql;
+import org.example.ConexaoSqlserver;
 
 import java.time.Instant;
 
@@ -11,19 +13,27 @@ public class SistemaCp extends Componente {
     }
 
     @Override
-    public void buscarInfosFixos() {
+    public void buscarInfosFixos(Boolean integer) {
+
+
+        ConexaoMysql con = new ConexaoMysql();
+
 
         Looca looca = new Looca();
-        Conexao con = new Conexao();
 
         //            SISTEMA
         String modeloSistema = looca.getRede().getParametros().getHostName();
         Instant inicializadoSistema = looca.getSistema().getInicializado();
 
         String querySistema = """
-                    INSERT INTO dadosFixos VALUES
-                                            (null, %d, 1, 'modelo do Sistema', '%s', 'modelo do Sistema'),
-                                            (null, %d, 1, 'inicialização do sistema', '%s', 'inicialização do sistema');
+                    INSERT INTO dadosFixos(
+                    fkMaquina
+                    ,fkTipoComponente
+                    ,nomeCampo
+                    ,valorCampo
+                    ,descricao)  VALUES
+                                            ( %d, 1, 'modelo do Sistema', '%s', 'modelo do Sistema'),
+                                            ( %d, 1, 'inicialização do sistema', '%s', 'inicialização do sistema');
                 """.formatted(
                 fkMaquina,
                 modeloSistema,
@@ -32,18 +42,22 @@ public class SistemaCp extends Componente {
         );
 
         con.executarQuery(querySistema);
+        if (integer == true){
+            ConexaoSqlserver con1 = new ConexaoSqlserver();
+            con1.executarQuery(querySistema);
+        }
     }
 
     @Override
-    public void buscarInfosVariaveis() {
+    public void buscarInfosVariaveis(Boolean teste) {
 
     }
 
     @Override
-    public void atualizarFixos() {
+    public void atualizarFixos(Boolean servidor) {
 
         Looca looca = new Looca();
-        Conexao con = new Conexao();
+        ConexaoMysql con = new ConexaoMysql();
 
         String modeloSistema = looca.getRede().getParametros().getHostName();
         Instant inicializadoSistema = looca.getSistema().getInicializado();
@@ -71,6 +85,13 @@ public class SistemaCp extends Componente {
                 1);
 
         con.executarQuery(sql22);
+
+        if (servidor){
+            ConexaoSqlserver con1 = new ConexaoSqlserver();
+            con1.executarQuery(sql);
+            con1.executarQuery(sql22);
+
+        }
 
     }
 }

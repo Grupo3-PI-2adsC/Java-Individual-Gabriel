@@ -40,41 +40,20 @@ public class Computador {
 
     }
 
-
     public Integer getIdMaquina() {
         return idMaquina;
+    }
+
+    public void setIdMaquina(Integer idMaquina) {
+        this.idMaquina = idMaquina;
     }
 
     public String getHostname() {
         return hostname;
     }
 
-    public Integer getEmpresa() {
-        return empresa;
-    }
-
-    public RedeCp getRede() {
-        return rede;
-    }
-
-    public DiscoCp getDisco() {
-        return disco;
-    }
-
-    public ProcessadorCp getProcessador() {
-        return processador;
-    }
-
-    public RamCp getRam() {
-        return ram;
-    }
-
-    public VolumeCp getVolume() {
-        return volume;
-    }
-
-    public SistemaCp getSistema() {
-        return sistema;
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
     }
 
     public Boolean getAtivo() {
@@ -85,6 +64,14 @@ public class Computador {
         this.ativo = ativo;
     }
 
+    public Integer getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Integer empresa) {
+        this.empresa = empresa;
+    }
+
     public List<Componente> getListaComponentes() {
         return listaComponentes;
     }
@@ -93,13 +80,55 @@ public class Computador {
         this.listaComponentes = listaComponentes;
     }
 
-    public void buscarInfos(Integer primeiro) {
-        if (primeiro == 0) {
-            for (Componente componenteAtual : listaComponentes) {
-                System.out.println(componenteAtual);
-                componenteAtual.buscarInfosFixos();
-            }
-        }
+    public RedeCp getRede() {
+        return rede;
+    }
+
+    public void setRede(RedeCp rede) {
+        this.rede = rede;
+    }
+
+    public DiscoCp getDisco() {
+        return disco;
+    }
+
+    public void setDisco(DiscoCp disco) {
+        this.disco = disco;
+    }
+
+    public ProcessadorCp getProcessador() {
+        return processador;
+    }
+
+    public void setProcessador(ProcessadorCp processador) {
+        this.processador = processador;
+    }
+
+    public RamCp getRam() {
+        return ram;
+    }
+
+    public void setRam(RamCp ram) {
+        this.ram = ram;
+    }
+
+    public VolumeCp getVolume() {
+        return volume;
+    }
+
+    public void setVolume(VolumeCp volume) {
+        this.volume = volume;
+    }
+
+    public SistemaCp getSistema() {
+        return sistema;
+    }
+
+    public void setSistema(SistemaCp sistema) {
+        this.sistema = sistema;
+    }
+
+    public void buscarInfos(Integer primeiro, Boolean teste) {
 
         try {
             TimeUnit.SECONDS.sleep(10);
@@ -110,13 +139,35 @@ public class Computador {
                     ...............................""");
             for (Componente componenteAtual : listaComponentes) {
                 System.out.println(componenteAtual);
-                componenteAtual.buscarInfosVariaveis();
+                if (teste){
+                    componenteAtual.buscarInfosVariaveis(teste);
+                }
+                else {
+                    componenteAtual.buscarInfosVariaveis(teste);
+                }
             }
-            buscarInfos(1);
+            buscarInfos(1, teste);
         } catch (InterruptedException e) {
             System.out.println(e);
         }
     }
+
+    public void cadastrarFixos(Boolean servidor){
+        for (Componente componenteAtual : listaComponentes) {
+            System.out.println(componenteAtual);
+            componenteAtual.buscarInfosFixos(servidor);
+        }
+    }
+
+    public void atualizarFixos(Boolean servidor){
+        System.out.println("""
+                Atualizando Componentes fixos do computador
+                ............................................""");
+        for (Componente componenteAtual : listaComponentes) {
+            componenteAtual.atualizarFixos(servidor);
+        }
+    }
+
 
     @Override
     public String toString() {
