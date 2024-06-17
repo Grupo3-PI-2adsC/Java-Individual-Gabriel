@@ -7,7 +7,7 @@ import org.example.ConexaoSqlserver;
 
 public class VolumeCp extends Componente {
 
-    public VolumeCp(Integer fkMaquina) {
+    public VolumeCp(String fkMaquina) {
         super(fkMaquina);
     }
 
@@ -15,7 +15,6 @@ public class VolumeCp extends Componente {
     public void buscarInfosFixos(Boolean integer) {
 
 
-        ConexaoMysql con = new ConexaoMysql();
 
 
         Looca looca = new Looca();
@@ -29,15 +28,18 @@ public class VolumeCp extends Componente {
                     ,nomeCampo
                     ,valorCampo
                     ,descricao)  VALUES
-                                (%d, 6, 'qtdVolumes', '%s', 'quantidade de volumes no computador');
+                                ('%s', 6, 'qtdVolumes', '%s', 'quantidade de volumes no computador');
                 """.formatted(
                 fkMaquina,
                 qtdVolumesVolume);
 
-        con.executarQuery(queryVolume2);
         if (integer == true){
             ConexaoSqlserver con1 = new ConexaoSqlserver();
             con1.executarQuery(queryVolume2);
+        }else{
+            ConexaoMysql con = new ConexaoMysql();
+            con.executarQuery(queryVolume2);
+
         }
 
         for (int i = 1; i < qtdVolumesVolume; i++) {
@@ -57,11 +59,11 @@ public class VolumeCp extends Componente {
                             ,valorCampo
                             ,descricao) 
                             VALUES
-                                                    ( %d, 6, 'UUID do volume', '%s', 'UUID do volume'),
-                                                    ( %d, 6, 'nome do volume', '%s', 'nome do volume'),
-                                                    ( %d, 6, 'tamanho total do volume', '%s', 'tamanho total do volume'),
-                                                    ( %d, 6, 'tamanho disponivel do volume', '%s', 'tamanho disponivel do volume'),
-                                                    ( %d, 6, 'tipo do volume', '%s', 'tipo do volume')
+                                                    ( '%s', 6, 'UUID do volume', '%s', 'UUID do volume'),
+                                                    ( '%s', 6, 'nome do volume', '%s', 'nome do volume'),
+                                                    ( '%s', 6, 'tamanho total do volume', '%s', 'tamanho total do volume'),
+                                                    ( '%s', 6, 'tamanho disponivel do volume', '%s', 'tamanho disponivel do volume'),
+                                                    ( '%s', 6, 'tipo do volume', '%s', 'tipo do volume')
                         """.formatted(
                     fkMaquina,
                     UUIDVolume,
@@ -75,10 +77,13 @@ public class VolumeCp extends Componente {
                     tipoVolume
             );
 
-            con.executarQuery(queryVolume);
             if (integer == true){
                 ConexaoSqlserver con1 = new ConexaoSqlserver();
                 con1.executarQuery(queryVolume);
+            }else{
+                ConexaoMysql con = new ConexaoMysql();
+                con.executarQuery(queryVolume);
+
             }
         }
     }
@@ -92,23 +97,25 @@ public class VolumeCp extends Componente {
     public void atualizarFixos(Boolean servidor) {
 
         Looca looca = new Looca();
-        ConexaoMysql con1 = new ConexaoMysql();
 
         Integer qtdVolumesVolume = looca.getGrupoDeDiscos().getQuantidadeDeDiscos();
 
         String sql = """
                                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'quantidade de volumes no computador';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'quantidade de volumes no computador';
                 """.formatted(
                 qtdVolumesVolume,
                 fkMaquina,
                 6);
-        con1.executarQuery(sql);
 
 
         if (servidor){
             ConexaoSqlserver con = new ConexaoSqlserver();
             con.executarQuery(sql);;
+
+        }else{
+            ConexaoMysql con1 = new ConexaoMysql();
+            con1.executarQuery(sql);
 
         }
 
@@ -123,53 +130,48 @@ public class VolumeCp extends Componente {
 
             String sql1 = """
                                     
-                    UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'tipo do volume';
+                    UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'tipo do volume';
                     """.formatted(
                     tipoVolume,
                     fkMaquina,
                     6);
-            con1.executarQuery(sql1);
 
 
             String sql2 = """
                     
-                    UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'tamanho total do volume';
+                    UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'tamanho total do volume';
                     """.formatted(
                     totalVolume,
                     fkMaquina,
                     6);
 
-            con1.executarQuery(sql2);
 
             String sql3 = """
                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'tamanho disponivel do volume';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'tamanho disponivel do volume';
                 """.formatted(
                     disponivelVolume,
                     fkMaquina,
                     6);
 
-            con1.executarQuery(sql3);
 
             String sql4 = """
                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'nome do volume';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'nome do volume';
                 """.formatted(
                     nomeVolume,
                     fkMaquina,
                     6);
 
-            con1.executarQuery(sql4);
 
             String sql5 = """
                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'UUID do volume';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'UUID do volume';
                 """.formatted(
                     UUIDVolume,
                     fkMaquina,
                     6);
 
-            con1.executarQuery(sql5);
 
 
             if (servidor){
@@ -179,6 +181,14 @@ public class VolumeCp extends Componente {
                 con.executarQuery(sql3);
                 con.executarQuery(sql4);
                 con.executarQuery(sql5);
+
+            }else{
+                ConexaoMysql con1 = new ConexaoMysql();
+                con1.executarQuery(sql1);
+                con1.executarQuery(sql2);
+                con1.executarQuery(sql3);
+                con1.executarQuery(sql4);
+                con1.executarQuery(sql5);
 
             }
         }

@@ -83,20 +83,30 @@ public class Main {
 
 //        Computador computador = new Computador();
         try {
-            con.buscarCredenciais(emailLogin, senhaLogin);
-            Computador computador = con.computadorExiste(1, true);
+            Usuario userSqlserver = con.buscarCredenciais(emailLogin, senhaLogin);
+            Usuario userMysql = con10.buscarCredenciais(emailLogin, senhaLogin);
+            Computador computador = con10.computadorExiste(3, false, userMysql);
 
             try {
-                con10.buscarCredenciais(emailLogin, senhaLogin);
+//                con10.buscarCredenciais(emailLogin, senhaLogin);
 
                 System.out.println("""
                                 Usuario Logado com sucesso
                                 ..............................""");
 
 
-                Computador computador1 = con10.computadorExiste(1, true);
-                System.out.println(computador1);
-                computador.buscarInfos(1, true);
+                Computador computador1 = con.computadorExiste(1, true, userSqlserver);
+                System.out.println("Main: " + computador1);
+                LimparVolume limparVolume = new LimparVolume();
+
+                while(true) {
+                    try {
+                        computador1.buscarInfos(1, true);
+                        computador.buscarInfos(1, false);
+                    }catch (Exception erro){
+                        System.out.println(erro);
+                    }
+                }
 
             }catch (Exception erro){
                 System.out.println(erro);
@@ -109,21 +119,21 @@ public class Main {
                                 .......................................""");
             if (erro.getCause() != null){
 
-                try {
-                    con10.buscarCredenciais(emailLogin, senhaLogin);
-
-                    System.out.println("""
-                                        Usuario Logado com sucesso localmente
-                                        ..............................""");
-
-
-                    Computador computador1 = con10.computadorExiste(1, false);
-                    System.out.println("main + " + computador1);
-
-                }catch (Exception erro2){
-                    System.out.println("erro no main");
-                    System.out.println(erro2);
-                }
+//                try {
+//                    con10.buscarCredenciais(emailLogin, senhaLogin);
+//
+//                    System.out.println("""
+//                                        Usuario Logado com sucesso localmente
+//                                        ..............................""");
+//
+//
+//                    Computador computador1 = con10.computadorExiste(1, false);
+//                    System.out.println("main + " + computador1);
+//
+//                }catch (Exception erro2){
+//                    System.out.println("erro no main");
+//                    System.out.println(erro2);
+//                }
             }
         }
 

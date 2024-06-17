@@ -8,7 +8,7 @@ import org.example.ConexaoSqlserver;
 import java.time.Instant;
 
 public class SistemaCp extends Componente {
-    public SistemaCp(Integer fkMaquina) {
+    public SistemaCp(String fkMaquina) {
         super(fkMaquina);
     }
 
@@ -16,7 +16,6 @@ public class SistemaCp extends Componente {
     public void buscarInfosFixos(Boolean integer) {
 
 
-        ConexaoMysql con = new ConexaoMysql();
 
 
         Looca looca = new Looca();
@@ -32,8 +31,8 @@ public class SistemaCp extends Componente {
                     ,nomeCampo
                     ,valorCampo
                     ,descricao)  VALUES
-                                            ( %d, 1, 'modelo do Sistema', '%s', 'modelo do Sistema'),
-                                            ( %d, 1, 'inicialização do sistema', '%s', 'inicialização do sistema');
+                                            ( '%s', 1, 'modelo do Sistema', '%s', 'modelo do Sistema'),
+                                            ( '%s', 1, 'inicialização do sistema', '%s', 'inicialização do sistema');
                 """.formatted(
                 fkMaquina,
                 modeloSistema,
@@ -41,10 +40,13 @@ public class SistemaCp extends Componente {
                 inicializadoSistema
         );
 
-        con.executarQuery(querySistema);
         if (integer == true){
             ConexaoSqlserver con1 = new ConexaoSqlserver();
             con1.executarQuery(querySistema);
+        }else{
+            ConexaoMysql con = new ConexaoMysql();
+            con.executarQuery(querySistema);
+
         }
     }
 
@@ -57,7 +59,6 @@ public class SistemaCp extends Componente {
     public void atualizarFixos(Boolean servidor) {
 
         Looca looca = new Looca();
-        ConexaoMysql con = new ConexaoMysql();
 
         String modeloSistema = looca.getRede().getParametros().getHostName();
         Instant inicializadoSistema = looca.getSistema().getInicializado();
@@ -65,7 +66,7 @@ public class SistemaCp extends Componente {
 
         String sql = """
                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'modelo do Sistema';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'modelo do Sistema';
         
                 """.formatted(
                 modeloSistema,
@@ -74,22 +75,25 @@ public class SistemaCp extends Componente {
 
         );
 
-        con.executarQuery(sql);
 
         String sql22 = """
                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'inicialização do sistema';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'inicialização do sistema';
                 """.formatted(
                 inicializadoSistema,
                 fkMaquina,
                 1);
 
-        con.executarQuery(sql22);
 
         if (servidor){
             ConexaoSqlserver con1 = new ConexaoSqlserver();
             con1.executarQuery(sql);
             con1.executarQuery(sql22);
+
+        }else{
+            ConexaoMysql con = new ConexaoMysql();
+            con.executarQuery(sql);
+            con.executarQuery(sql22);
 
         }
 

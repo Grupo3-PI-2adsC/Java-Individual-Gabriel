@@ -2,9 +2,9 @@ package org.example.pc.componentes;
 
 public abstract class Componente {
 
-    protected Integer fkMaquina;
+    protected String fkMaquina;
 
-    public Componente(Integer fkMaquina) {
+    public Componente(String fkMaquina) {
         this.fkMaquina = fkMaquina;
     }
 

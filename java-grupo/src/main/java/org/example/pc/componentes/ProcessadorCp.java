@@ -7,7 +7,7 @@ import org.example.ConexaoSqlserver;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class ProcessadorCp extends Componente {
-    public ProcessadorCp(Integer fkMaquina) {
+    public ProcessadorCp(String fkMaquina) {
         super(fkMaquina);
     }
 
@@ -15,7 +15,6 @@ public class ProcessadorCp extends Componente {
     public void buscarInfosFixos(Boolean integer) {
 
 
-        ConexaoMysql con = new ConexaoMysql();
 
         Looca looca = new Looca();
 
@@ -33,11 +32,11 @@ public class ProcessadorCp extends Componente {
                     ,nomeCampo
                     ,valorCampo
                     ,descricao)  VALUES
-                                            ( %d, 3, 'Nome do processador', '%s', 'Nome do processador'),
-                                            ( %d, 3, 'Numero de pacotes físicos do processador', '%s', 'Numero de pacotes físicos do processador'),
-                                            ( %d, 3, 'Potencia do processador', '%s', 'Potencia do processador'),
-                                            ( %d, 3, 'Numero de CPUs físicas do processador', '%s', 'Numero de CPUs físicas do processador'),
-                                            ( %d, 3, 'Numero de CPUs Logicas do processador', '%s', 'Numero de CPUs Logicas do processador')
+                                            ( '%s', 3, 'Nome do processador', '%s', 'Nome do processador'),
+                                            ( '%s', 3, 'Numero de pacotes físicos do processador', '%s', 'Numero de pacotes físicos do processador'),
+                                            ( '%s', 3, 'Potencia do processador', '%s', 'Potencia do processador'),
+                                            ( '%s', 3, 'Numero de CPUs físicas do processador', '%s', 'Numero de CPUs físicas do processador'),
+                                            ( '%s', 3, 'Numero de CPUs Logicas do processador', '%s', 'Numero de CPUs Logicas do processador')
                 """.formatted(
                 fkMaquina,
                 nomeProcessador,
@@ -51,10 +50,13 @@ public class ProcessadorCp extends Componente {
                 nmrCpusLogicasProcessador
         );
 
-        con.executarQuery(queryProcessador);
         if (integer == true){
             ConexaoSqlserver con1 = new ConexaoSqlserver();
             con1.executarQuery(queryProcessador);
+        }else {
+            ConexaoMysql con = new ConexaoMysql();
+            con.executarQuery(queryProcessador);
+
         }
     }
 
@@ -66,7 +68,7 @@ public class ProcessadorCp extends Componente {
         Double emUsoProcessador = (looca.getProcessador().getUso());
 
         String queryFk = """
-                select idDadosFixos from dadosFixos where fkMaquina = %d and fkTipoComponente = 3 and nomeCampo = 'Nome do processador'""".formatted(fkMaquina);
+                select idDadosFixos from dadosFixos where fkMaquina = '%s' and fkTipoComponente = 3 and nomeCampo = 'Nome do processador'""".formatted(fkMaquina);
 
 
         if (teste) {
@@ -87,7 +89,7 @@ public class ProcessadorCp extends Componente {
                          ,dataHora
                          ,nomeCampo
                          ,valorCampo) values
-                        ( %d, %d, 3, current_timestamp,'emUso', '%s');
+                        ( %d, '%s', 3, current_timestamp,'emUso', '%s');
                               """.formatted(
                         fk,
                         fkMaquina,
@@ -100,34 +102,35 @@ public class ProcessadorCp extends Componente {
                 System.out.println(erro);
             }
 
-        }
+        }else {
 
-        ConexaoMysql conexao1 = new ConexaoMysql();
-        JdbcTemplate con1 = conexao1.getConexaoDoBanco();
+            ConexaoMysql conexao1 = new ConexaoMysql();
+            JdbcTemplate con1 = conexao1.getConexaoDoBanco();
 
-        try {
+            try {
 
 
-            Integer fk1 = con1.queryForObject(queryFk,Integer.class);
+                Integer fk1 = con1.queryForObject(queryFk, Integer.class);
 
-            var queryMemoria1= """
-                     iNSERT INTO dadosTempoReal(
-                      fkDadosFixos
-                      ,fkMaquina
-                      ,fkTipoComponente
-                      ,dataHora
-                      ,nomeCampo
-                      ,valorCampo) values
-                      ( %d, %d, 3, current_timestamp(),'emUso', '%s');
-                           """.formatted(
-                    fk1,
-                    fkMaquina,
-                    emUsoProcessador
-            );
+                var queryMemoria1 = """
+                        iNSERT INTO dadosTempoReal(
+                         fkDadosFixos
+                         ,fkMaquina
+                         ,fkTipoComponente
+                         ,dataHora
+                         ,nomeCampo
+                         ,valorCampo) values
+                         ( %d, '%s', 3, current_timestamp(),'emUso', '%s');
+                              """.formatted(
+                        fk1,
+                        fkMaquina,
+                        emUsoProcessador
+                );
 
-            conexao1.executarQuery(queryMemoria1);
-        }catch (Exception erro){
-            System.out.println(erro);
+                conexao1.executarQuery(queryMemoria1);
+            } catch (Exception erro) {
+                System.out.println(erro);
+            }
         }
     }
 
@@ -135,7 +138,6 @@ public class ProcessadorCp extends Componente {
     public void atualizarFixos(Boolean servidor) {
 
         Looca looca =  new Looca();
-        ConexaoMysql con1 =  new ConexaoMysql();
 
         String nomeProcessador = looca.getProcessador().getNome();
         Integer nmrPacotesFisicosProcessador = looca.getProcessador().getNumeroPacotesFisicos();
@@ -147,54 +149,54 @@ public class ProcessadorCp extends Componente {
 
         String sql17 = """
                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'Numero de CPUs Logicas do processador';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'Numero de CPUs Logicas do processador';
                 """.formatted(
                 nmrCpusLogicasProcessador,
                 fkMaquina,
                 3);
 
-        con1.executarQuery(sql17);
+
 
         String sql18 = """
                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'Numero de CPUs físicas do processador';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'Numero de CPUs físicas do processador';
                 """.formatted(
                 nmrCpusFisicosProcessador,
                 fkMaquina,
                 3);
 
-        con1.executarQuery(sql18);
+
 
         String sql = """
                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'Potencia do processador';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'Potencia do processador';
                 """.formatted(
                 potenciaProcessador,
                 fkMaquina,
                 3);
 
-        con1.executarQuery(sql);
+
 
         String sql19 = """
                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'Numero de pacotes físicos do processador';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'Numero de pacotes físicos do processador';
                 """.formatted(
                 nmrPacotesFisicosProcessador,
                 fkMaquina,
                 3);
 
-        con1.executarQuery(sql19);
+
 
 
         String sql20 = """
                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'Nome do Processador';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'Nome do Processador';
                 """.formatted(
                 nomeProcessador,
                 fkMaquina,
                 3);
 
-        con1.executarQuery(sql20);
+
 
         if (servidor){
             ConexaoSqlserver con =  new ConexaoSqlserver();
@@ -204,6 +206,14 @@ public class ProcessadorCp extends Componente {
             con.executarQuery(sql19);
             con.executarQuery(sql20);
 
+        }
+        else {
+            ConexaoMysql con1 =  new ConexaoMysql();
+            con1.executarQuery(sql17);
+            con1.executarQuery(sql18);
+            con1.executarQuery(sql);
+            con1.executarQuery(sql19);
+            con1.executarQuery(sql20);
         }
 
     }

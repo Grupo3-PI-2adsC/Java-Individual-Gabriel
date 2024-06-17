@@ -9,7 +9,7 @@ public class RamCp extends Componente {
 
 //    private Memoria memoria;
 
-    public RamCp(Integer fkMaquina) {
+    public RamCp(String fkMaquina) {
         super(fkMaquina);
 //        this.memoria = new Memoria();
     }
@@ -21,7 +21,6 @@ public class RamCp extends Componente {
     @Override
     public void buscarInfosFixos(Boolean integer) {
 
-        ConexaoMysql con = new ConexaoMysql();
         Looca looca = new Looca();
 
 
@@ -34,16 +33,19 @@ public class RamCp extends Componente {
                     ,nomeCampo
                     ,valorCampo
                     ,descricao)  VALUES
-                                            ( %d, 2, 'total de memoria do computador', '%s', 'total de memoria do computador')
+                                            ( '%s', 2, 'total de memoria do computador', '%s', 'total de memoria do computador')
                 """.formatted(
                 fkMaquina,
                 totalMemoria
         );
 
-        con.executarQuery(queryMemoria);
         if (integer == true){
             ConexaoSqlserver con1 = new ConexaoSqlserver();
             con1.executarQuery(queryMemoria);
+        }else{
+            ConexaoMysql con = new ConexaoMysql();
+            con.executarQuery(queryMemoria);
+
         }
 
     }
@@ -60,7 +62,7 @@ public class RamCp extends Componente {
 
             try {
                 String queryFk = """
-                        select idDadosFixos from dadosFixos where fkMaquina = %d and fkTipoComponente = 2 and nomeCampo = 'total de memoria do computador'""".formatted(fkMaquina);
+                        select idDadosFixos from dadosFixos where fkMaquina = '%s' and fkTipoComponente = 2 and nomeCampo = 'total de memoria do computador'""".formatted(fkMaquina);
                 System.out.println(queryFk);
                 Integer fk = con.queryForObject(queryFk, Integer.class);
                 System.out.println(fk);
@@ -74,7 +76,7 @@ public class RamCp extends Componente {
                          ,dataHora
                          ,nomeCampo
                          ,valorCampo) VALUES
-                           ( %d, %d, 2, current_timestamp,'emUso', '%s');
+                           ( %d, '%s', 2, current_timestamp,'emUso', '%s');
                             """.formatted(
                         fk,
                         fkMaquina,
@@ -86,19 +88,19 @@ public class RamCp extends Componente {
             } catch (Exception erro) {
                 System.out.println(erro);
             }
-        }
-        ConexaoMysql conexao1 = new ConexaoMysql();
-        JdbcTemplate con1 = conexao1.getConexaoDoBanco();
+        }else {
+            ConexaoMysql conexao1 = new ConexaoMysql();
+            JdbcTemplate con1 = conexao1.getConexaoDoBanco();
 
-        try{
-            String queryFk = """
-                    select idDadosFixos from dadosFixos where fkMaquina = %d and fkTipoComponente = 2 and nomeCampo = 'total de memoria do computador'""".formatted(fkMaquina);
-            System.out.println(queryFk);
-            Integer fk = con1.queryForObject(queryFk,Integer.class);
-            System.out.println(fk);
+            try {
+                String queryFk = """
+                        select idDadosFixos from dadosFixos where fkMaquina = '%s' and fkTipoComponente = 2 and nomeCampo = 'total de memoria do computador'""".formatted(fkMaquina);
+                System.out.println(queryFk);
+                Integer fk = con1.queryForObject(queryFk, Integer.class);
+                System.out.println(fk);
 
-            var queryMemoria= """
-                    
+                var queryMemoria = """
+                                            
                         iNSERT INTO dadosTempoReal(
                          fkDadosFixos
                          ,fkMaquina
@@ -106,20 +108,19 @@ public class RamCp extends Componente {
                          ,dataHora
                          ,nomeCampo
                          ,valorCampo)VALUES
-                         ( %d, %d, 2, current_timestamp(),'emUso', '%s');
+                         ( %d,'%s', 2, current_timestamp(),'emUso', '%s');
                            """.formatted(
-                    fk,
-                    fkMaquina,
-                    emUsoMemoria
-            );
+                        fk,
+                        fkMaquina,
+                        emUsoMemoria
+                );
 
 
-
-            conexao1.executarQuery(queryMemoria);
-        }catch (Exception erro){
-            System.out.println(erro);
+                conexao1.executarQuery(queryMemoria);
+            } catch (Exception erro) {
+                System.out.println(erro);
+            }
         }
-
 
     }
 
@@ -127,24 +128,26 @@ public class RamCp extends Componente {
     public void atualizarFixos(Boolean servidor) {
 
         Looca looca = new Looca();
-        ConexaoMysql con1 = new ConexaoMysql();
 
         Long totalMemoria = (looca.getMemoria().getTotal() / 1000000000);
 
 
         String sql21 = """
                 
-                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%d' and fkTipoComponente = '%d' and nomeCampo = 'total de memoria do computador';
+                UPDATE dadosFixos SET valorCampo = '%s' where fkMaquina = '%s' and fkTipoComponente = '%d' and nomeCampo = 'total de memoria do computador';
                 """.formatted(
                 totalMemoria,
                 fkMaquina,
                 2);
 
-        con1.executarQuery(sql21);
 
         if (servidor){
             ConexaoSqlserver con = new ConexaoSqlserver();
             con.executarQuery(sql21);
+        }else{
+            ConexaoMysql con1 = new ConexaoMysql();
+            con1.executarQuery(sql21);
+
         }
 
     }

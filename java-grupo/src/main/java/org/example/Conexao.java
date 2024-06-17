@@ -17,7 +17,7 @@ public abstract class Conexao {
 
     public abstract Usuario buscarCredenciais(String email, String senha);
 
-    public abstract Computador computadorExiste(Integer vez, Boolean integer);
+    public abstract Computador computadorExiste(Integer vez, Boolean integer, Usuario user);
 
     public abstract void executarQuery(String query);
 

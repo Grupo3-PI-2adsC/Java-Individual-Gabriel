@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Computador {
-    private Integer idMaquina;
+    private String idMaquina;
     private String hostname;
     private Boolean ativo;
     private Integer empresa;
@@ -19,7 +19,7 @@ public class Computador {
     private VolumeCp volume;
     private SistemaCp sistema;
 
-    public Computador(Integer idMaquina, String hostname, Boolean ativo, Integer empresa) {
+    public Computador(String idMaquina, String hostname, Boolean ativo, Integer empresa) {
         this.idMaquina = idMaquina;
         this.hostname = hostname;
         this.ativo = ativo;
@@ -40,11 +40,11 @@ public class Computador {
 
     }
 
-    public Integer getIdMaquina() {
+    public String getIdMaquina() {
         return idMaquina;
     }
 
-    public void setIdMaquina(Integer idMaquina) {
+    public void setIdMaquina(String idMaquina) {
         this.idMaquina = idMaquina;
     }
 
@@ -146,7 +146,6 @@ public class Computador {
                     componenteAtual.buscarInfosVariaveis(teste);
                 }
             }
-            buscarInfos(1, teste);
         } catch (InterruptedException e) {
             System.out.println(e);
         }
